@@ -1,13 +1,21 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import {
+  EnvironmentInjector,
+  Injectable,
+  inject,
+  runInInjectionContext,
+  signal,
+} from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { tap } from 'rxjs';
 import { ProductModel } from '../models';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   public arrProducts = signal<ProductModel[]>([]);
   private readonly http = inject(HttpClient);
+  private readonly injector = inject(EnvironmentInjector);
 
   constructor() {
     this.getProducts();
@@ -22,8 +30,13 @@ export class ProductService {
   }
 
   public getProductById(id: number): any {
-    return this.http.get<ProductModel>(
-      `${environment.apriProducts.url}/products/${id}`
+    //NOTA: Requiere el contexto para poder generar la signal
+    return runInInjectionContext(this.injector, () =>
+      toSignal<ProductModel>(
+        this.http.get<ProductModel>(
+          `${environment.apriProducts.url}/products/${id}`
+        )
+      )
     );
   }
 }

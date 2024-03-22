@@ -5,6 +5,7 @@ export const routes: Routes = [
     path: 'products',
     loadChildren: () => import('./pages/products/products.routes'),
   },
+
   {
     path: 'checkout',
     loadComponent: () => import('./pages/checkout/checkout.component'),
