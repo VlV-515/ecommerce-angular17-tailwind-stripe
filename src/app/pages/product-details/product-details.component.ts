@@ -1,8 +1,16 @@
-import { Component, inject, Input, input, OnInit, Signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  input,
+  OnInit,
+  Signal,
+} from '@angular/core';
 import { ProductService } from '../../services/products.service';
 import { ProductModel } from '../../models';
 import { CurrencyPipe } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-details',
@@ -12,16 +20,26 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrl: './product-details.component.scss',
 })
 export default class ProductDetailsComponent implements OnInit {
-  //@Input({ alias: 'id' }) productId!: number;
-  productId = input<number>(0, { alias: 'id' });
   product!: Signal<ProductModel | undefined>;
   arrStars: number[] = new Array(5).fill(0);
+  private productId: number = 0;
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly productsSvc = inject(ProductService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
-    this.product = this.productsSvc.getProductById(this.productId());
+    this.activatedRoute.params.subscribe((params) => {
+      if (!params['id']) {
+        this.router.navigate(['/']);
+        return;
+      }
+      this.productId = params['id'];
+      this.product = this.productsSvc.getProductById(this.productId);
+    });
   }
+
+  public onAddToCart(): void {}
 
   generateSVG(index: number): SafeHtml {
     let svgContent = null;
@@ -53,6 +71,4 @@ export default class ProductDetailsComponent implements OnInit {
     }
     return this.sanitizer.bypassSecurityTrustHtml(svgContent);
   }
-
-  public onAddToCart(): void {}
 }

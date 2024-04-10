@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { ProductService } from '../../services/products.service';
-import { JsonPipe } from '@angular/common';
 import { CardProductComponent } from '../../components/card-product/card-product.component';
 
 @Component({

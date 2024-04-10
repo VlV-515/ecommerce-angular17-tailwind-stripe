@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {
   EnvironmentInjector,
   Injectable,
@@ -6,36 +6,38 @@ import {
   runInInjectionContext,
   signal,
 } from '@angular/core';
-import { environment } from '../../environments/environment.development';
-import { tap } from 'rxjs';
-import { ProductModel } from '../models';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { map, tap } from 'rxjs';
+import { ProductModel } from '../models';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   public arrProducts = signal<ProductModel[]>([]);
-  private readonly http = inject(HttpClient);
-  private readonly injector = inject(EnvironmentInjector);
+  private readonly _http = inject(HttpClient);
+  private readonly _endPoint = environment.apriProducts.url;
+  private readonly _injector = inject(EnvironmentInjector);
 
   constructor() {
     this.getProducts();
   }
 
   public getProducts(): void {
-    const params: HttpParams = new HttpParams().append('sort', 'desc');
-    this.http
-      .get<ProductModel[]>(`${environment.apriProducts.url}/products`)
-      .pipe(tap((data: ProductModel[]) => this.arrProducts.set(data)))
+    this._http
+      .get<ProductModel[]>(`${this._endPoint}/products/?sort=desc`)
+      .pipe(
+        map((products: ProductModel[]) =>
+          products.map((product: ProductModel) => ({ ...product, qty: 1 }))
+        ),
+        tap((products: ProductModel[]) => this.arrProducts.set(products))
+      )
       .subscribe();
   }
 
-  public getProductById(id: number): any {
-    //NOTA: Requiere el contexto para poder generar la signal
-    return runInInjectionContext(this.injector, () =>
+  public getProductById(id: number) {
+    return runInInjectionContext(this._injector, () =>
       toSignal<ProductModel>(
-        this.http.get<ProductModel>(
-          `${environment.apriProducts.url}/products/${id}`
-        )
+        this._http.get<ProductModel>(`${this._endPoint}/products/${id}`)
       )
     );
   }
