@@ -10,5 +10,11 @@ import {
 import { errorResponseInterceptor } from './interceptors/error-response.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient(withFetch())],
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([errorResponseInterceptor])
+    ),
+  ],
 };
