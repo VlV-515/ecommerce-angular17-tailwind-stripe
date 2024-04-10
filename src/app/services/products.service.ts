@@ -37,7 +37,9 @@ export class ProductService {
   public getProductById(id: number) {
     return runInInjectionContext(this._injector, () =>
       toSignal<ProductModel>(
-        this._http.get<ProductModel>(`${this._endPoint}/products/${id}`)
+        this._http
+          .get<ProductModel>(`${this._endPoint}/products/${id}`)
+          .pipe(map((product: ProductModel) => ({ ...product, qty: 1 })))
       )
     );
   }
