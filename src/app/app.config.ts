@@ -7,8 +7,9 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-import { errorResponseInterceptor } from './interceptors/error-response.interceptor';
+import { ErrorResponseInterceptor } from './interceptors/error-response.interceptor';
 import { provideToastr } from 'ngx-toastr';
+import { SpinnerInterceptor } from './interceptors/spinner.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptors([errorResponseInterceptor])
+      withInterceptors([ErrorResponseInterceptor, SpinnerInterceptor])
     ),
   ],
 };

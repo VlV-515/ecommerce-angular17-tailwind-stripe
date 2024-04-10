@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
-export const errorResponseInterceptor: HttpInterceptorFn = (
+export const ErrorResponseInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ) => next(req).pipe(catchError(handlerError));
