@@ -11,6 +11,7 @@ import { ProductModel } from '../../models';
 import { CurrencyPipe } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CartStore } from '../../services/shopping-cart.store';
 
 @Component({
   selector: 'app-product-details',
@@ -27,6 +28,7 @@ export default class ProductDetailsComponent implements OnInit {
   private readonly productsSvc = inject(ProductService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly router = inject(Router);
+  private readonly store = inject(CartStore);
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -39,7 +41,9 @@ export default class ProductDetailsComponent implements OnInit {
     });
   }
 
-  public onAddToCart(): void {}
+  public onAddToCart(): void {
+    this.store.addtoCart(this.product() as ProductModel);
+  }
 
   generateSVG(index: number): SafeHtml {
     let svgContent = null;
