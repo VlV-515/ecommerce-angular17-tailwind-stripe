@@ -65,7 +65,7 @@ jobs:
       - name: Install Netlify
         if: ${{ github.event_name == 'push' }}
         run: npm install netlify-cli@17.22.1 -g
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
