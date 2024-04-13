@@ -17,7 +17,6 @@ jobs:
           access_token: ${{ github.token }}
 
   lint:
-    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,6 +52,7 @@ jobs:
           path: dist
 
   deploy:
+    if: ${{ github.event_name == 'push' }}
     needs: [lint, build]
     runs-on: ubuntu-latest
     steps:
