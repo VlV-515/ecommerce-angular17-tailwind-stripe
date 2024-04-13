@@ -17,6 +17,7 @@ jobs:
           access_token: ${{ github.token }}
 
   lint:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -63,7 +64,6 @@ jobs:
           node-version: 20
           cache: "npm"
       - name: Install Netlify
-        if: ${{ github.event_name == 'push' }}
         run: npm install netlify-cli@17.22.1 -g
       - uses: actions/download-artifact@v4
         with:
