@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  inject,
-  input,
-  OnInit,
-  Signal,
-} from '@angular/core';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { ProductService } from '../../services/products.service';
 import { ProductModel } from '../../models';
 import { CurrencyPipe } from '@angular/common';

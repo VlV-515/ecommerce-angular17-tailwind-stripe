@@ -1,4 +1,3 @@
-import { provideRouter } from '@angular/router';
 import {
   patchState,
   signalStore,

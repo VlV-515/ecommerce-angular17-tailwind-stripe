@@ -12,9 +12,9 @@ import { ProductModel } from '../../models';
 })
 export class CardProductComponent {
   public product = input.required<ProductModel>();
-  @Output() public onAddToCartEvnt = new EventEmitter<ProductModel>();
+  @Output() public addToCartEvnt = new EventEmitter<ProductModel>();
 
   onAddToCart(): void {
-    this.onAddToCartEvnt.emit(this.product());
+    this.addToCartEvnt.emit(this.product());
   }
 }
