@@ -52,7 +52,6 @@ jobs:
           path: dist
 
   deploy:
-    if: ${{ github.event_name == 'push' }}
     needs: [lint, build]
     runs-on: ubuntu-latest
     steps:
@@ -69,6 +68,10 @@ jobs:
         with:
           name: dist
           path: dist
+      - name: log site_id
+        run: echo ${{ secrets.NETLIFY_SITE_ID }}
+      - name: log api_token
+        run: echo ${{ secrets.NETLIFY_API_TOKEN }}
       - name: Deploy to Netlify
         id: netlify_deploy
         run: |
