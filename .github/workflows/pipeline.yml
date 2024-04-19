@@ -69,9 +69,16 @@ jobs:
           name: dist
           path: dist
       - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: "dist"
+          production-branch: main
+          github-token: ${{ github.token  }}
+          deploy-message: "MESSAGE: Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
         env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_API_TOKEN: ${{ secrets.NETLIFY_API_TOKEN }}
-        id: netlify_deploy
-        run: |
-          netlify deploy --dir dist --site ${{ env.NETLIFY_SITE_ID }} --auth ${{ env.NETLIFY_API_TOKEN }}
+        timeout-minutes: 1
