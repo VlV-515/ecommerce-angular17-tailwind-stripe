@@ -52,27 +52,27 @@ jobs:
           path: dist
 
   deploy:
-    needs: [lint, build]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-      - name: Install Netlify
-        run: npm install netlify-cli@17.22.1 -g
       - uses: actions/download-artifact@v4
         with:
           name: dist
-          path: dist
-      - name: log site_id
-        run: echo ${{ secrets.NETLIFY_SITE_ID }}
-      - name: log api_token
-        run: echo ${{ secrets.NETLIFY_API_TOKEN }}
+          path: ./dist
       - name: Deploy to Netlify
-        id: netlify_deploy
-        run: |
-          netlify deploy --dir dist --site ${{ secrets.NETLIFY_SITE_ID }} --auth ${{ secrets.NETLIFY_API_TOKEN }}
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: "./dist"
+          production-branch: main
+          github-token: ${{ github.token  }}
+          deploy-message: "MESSAGE: Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1
