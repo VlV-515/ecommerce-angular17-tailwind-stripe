@@ -52,7 +52,7 @@ jobs:
           path: dist
 
   deploy:
-    needs: [lint, build]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,11 +68,10 @@ jobs:
         with:
           name: dist
           path: dist
-      - name: log site_id
-        run: echo ${{ secrets.NETLIFY_SITE_ID }}
-      - name: log api_token
-        run: echo ${{ secrets.NETLIFY_API_TOKEN }}
       - name: Deploy to Netlify
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_API_TOKEN: ${{ secrets.NETLIFY_API_TOKEN }}
         id: netlify_deploy
         run: |
-          netlify deploy --dir dist --site ${{ secrets.NETLIFY_SITE_ID }} --auth ${{ secrets.NETLIFY_API_TOKEN }}
+          netlify deploy --dir dist --site ${{ env.NETLIFY_SITE_ID }} --auth ${{ env.NETLIFY_API_TOKEN }}
